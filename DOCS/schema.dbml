@@ -1,0 +1,73 @@
+enum userRole {
+  BASIC
+  ADMIN
+}
+
+table categories {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  name varchar(255) [not null]
+}
+
+table comments {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  content varchar(500) [not null]
+  userId uuid [not null]
+  postId uuid [not null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null, default: `now()`]
+}
+
+table likes {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  userId uuid [not null]
+  postId uuid [not null]
+  createdAt timestamp [not null, default: `now()`]
+}
+
+table postCategories {
+  postId uuid [not null]
+  categoryId uuid [not null]
+
+  indexes {
+    (postId, categoryId) [pk]
+  }
+}
+
+table posts {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  title varchar(255) [not null]
+  content varchar(255) [not null]
+  authorId uuid [not null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null, default: `now()`]
+}
+
+table users {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  name varchar(255) [not null]
+  age integer [not null]
+  password varchar(255) [not null]
+  email varchar(255) [not null]
+  emailUpdates boolean [not null, default: false]
+  userRole userRole [not null, default: 'BASIC']
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null, default: `now()`]
+
+  indexes {
+    email [name: 'emailIndex', unique]
+  }
+}
+
+ref: comments.postId > posts.id
+
+ref: comments.userId > users.id
+
+ref: likes.postId > posts.id
+
+ref: likes.userId > users.id
+
+ref: postCategories.postId > posts.id
+
+ref: postCategories.categoryId > categories.id
+
+ref: posts.authorId > users.id
