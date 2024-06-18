@@ -69,10 +69,6 @@ npm run studio
 Para iniciar o servidor Node, execute:
 ```bash
 npm run dev
-```### Passo 6: Executar o servidor:
-Para iniciar o servidor Node, execute:
-```bash
-npm run dev
 ```
 
 ### Passo 7: Popular Banco de Dados (Em processo):
