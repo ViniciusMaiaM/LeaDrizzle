@@ -20,19 +20,20 @@ import { authMiddleware } from "../middleware/auth";
 
 const postRoutes = Router();
 
-postRoutes.get("/", authMiddleware, getAllPosts);
-//TODO: Add admin verification
+postRoutes.use(authMiddleware());
 
-postRoutes.get("/:id", authMiddleware, getPostById);
+postRoutes.get("/", getAllPosts);
 
-postRoutes.post("/", authMiddleware, validateData(createPostSchema), createPost);
+postRoutes.get("/:id", getPostById);
 
-postRoutes.put("/:id", authMiddleware, validateData(updatePostSchema), updatePost);
+postRoutes.post("/", validateData(createPostSchema), createPost);
 
-postRoutes.delete("/:id", authMiddleware, deletePost);
+postRoutes.put("/:id", validateData(updatePostSchema), updatePost);
 
-postRoutes.post("/comments", authMiddleware, validateData(createCommentSchema), addComment);
+postRoutes.delete("/:id", deletePost);
 
-postRoutes.post("/likes", authMiddleware, validateData(createLikeSchema), addLike);
+postRoutes.post("/comments", validateData(createCommentSchema), addComment);
+
+postRoutes.post("/likes", validateData(createLikeSchema), addLike);
 
 export default postRoutes;
