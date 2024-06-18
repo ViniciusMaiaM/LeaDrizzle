@@ -19,7 +19,6 @@ export const createUser = async (userData: any) => {
     .select()
     .from(users)
     .where(eq(users.email, validatedData.email));
-  console.log(existingUser);
 
   if (existingUser.length > 0) {
     throw new Error("User already exists");
