@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import { secretKey } from "../../secret";
 
-export const generateToken = (user: any) => {
+export const generateToken = (id: string, email: string) => {
   const payload = {
-    id: user.id,
-    email: user.email,
+    id: id,
+    email: email,
   };
   return jwt.sign(payload, secretKey, { expiresIn: "1h" });
 };
