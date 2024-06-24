@@ -23,7 +23,7 @@ export const getPostById = async (
   try {
     const { id } = req.params;
     const post = await postService.getPostById(id);
-    if (!post.length) {
+    if (!post) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Post not found" });
@@ -42,7 +42,7 @@ export const getPostByUserId = async (
   try {
     const { userId } = req.params;
     const post = await postService.getPostByUserId(userId);
-    if (!post.length) {
+    if (!post) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Post not found" });
