@@ -1,43 +1,81 @@
 import { db } from "../drizzle/db";
-import { posts, comments, likes } from "../drizzle/schema";
-import { createPostSchema, updatePostSchema } from "../schemas/postSchema";
+import {
+  posts,
+  comments,
+  likes,
+  postCategories,
+  categories,
+} from "../drizzle/schema";
+import { createPostSchema } from "../schemas/postSchema";
 import { createCommentSchema } from "../schemas/commentSchema";
 import { createLikeSchema } from "../schemas/likeSchema";
 import { eq } from "drizzle-orm";
 
+
 export const getAllPosts = async () => {
-  return await db
-    .select()
-    .from(posts)
-    .leftJoin(comments, eq(posts.id, comments.postId))
-    .leftJoin(likes, eq(posts.id, likes.postId));
+  const allPosts = await db.query.posts.findMany({
+    with: {
+      categories: true,
+      comments: true,
+      likes: true,
+    },
+  });
+
+  return allPosts;
 };
 
 export const getPostById = async (id: string) => {
-  return await db
-    .select()
-    .from(posts)
-    .leftJoin(comments, eq(posts.id, comments.postId))
-    .leftJoin(likes, eq(posts.id, likes.postId))
-    .where(eq(posts.id, id));
+  const post = await db.query.posts.findFirst({
+    where: eq(posts.id, id),
+    with: {
+      categories: true,
+      comments: true,
+      likes: true,
+    },
+  });
+  if (!post) {
+    return null;
+  }
+
+  return post;
 };
 
 export const getPostByUserId = async (userId: string) => {
-  return await db
-    .select()
-    .from(posts)
-    .leftJoin(comments, eq(posts.id, comments.postId))
-    .leftJoin(likes, eq(posts.id, likes.postId))
-    .where(eq(posts.authorId, userId));
+  const userPosts = await db.query.posts.findFirst({
+    where: eq(posts.authorId, userId),
+    with: {
+      categories: true,
+      comments: true,
+      likes: true,
+    },
+  });
+
+  return userPosts;
 };
 
 export const createPost = async (postData: any) => {
   const validatedData = createPostSchema.parse(postData);
-  return await db.insert(posts).values(validatedData).returning();
+
+  const { categoryId, ...postWithoutCategoryId } = validatedData;
+
+  const insertedPost = await db
+    .insert(posts)
+    .values(postWithoutCategoryId)
+    .returning();
+
+  await db
+    .insert(postCategories)
+    .values({
+      postId: insertedPost[0].id,
+      categoryId,
+    })
+    .returning();
+
+  return insertedPost;
 };
 
 export const updatePost = async (id: string, postData: any) => {
-  const validatedData = updatePostSchema.parse(postData);
+  const validatedData = createPostSchema.parse(postData);
   return await db
     .update(posts)
     .set(validatedData)
