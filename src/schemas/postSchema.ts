@@ -10,9 +10,10 @@ export const postSchema = z.object({
 });
 
 export const createPostSchema = z.object({
-  title: z.string().min(1, { message: "Title must not be empty" }),
-  content: z.string().min(1, { message: "Content must not be empty" }),
+  title: z.string().min(5, { message: "Title must not be empty" }),
+  content: z.string().min(5, { message: "Content must not be empty" }),
   authorId: z.string().uuid(),
+  categoryId: z.string().uuid(),
 });
 
 export const updatePostSchema = z.object({
@@ -22,4 +23,5 @@ export const updatePostSchema = z.object({
     .min(5, { message: "Content must not be empty" })
     .optional(),
   authorId: z.string().uuid().optional(),
+  categoryId: z.string().uuid().optional(),
 });
