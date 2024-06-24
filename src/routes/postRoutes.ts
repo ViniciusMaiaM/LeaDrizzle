@@ -7,10 +7,10 @@ import {
   deletePost,
   addComment,
   addLike,
+  getPostByUserId,
 } from "../controllers/postController";
 import { validateData } from "../middleware/validationMiddleware";
 import {
-  postSchema,
   createPostSchema,
   updatePostSchema,
 } from "../schemas/postSchema";
@@ -25,6 +25,8 @@ postRoutes.use(authMiddleware());
 postRoutes.get("/", getAllPosts);
 
 postRoutes.get("/:id", getPostById);
+
+postRoutes.get("/user/:userId", getPostByUserId);
 
 postRoutes.post("/", validateData(createPostSchema), createPost);
 
