@@ -7,7 +7,6 @@ import {
   uuid,
   uniqueIndex,
   varchar,
-  real,
   timestamp,
   primaryKey,
 } from "drizzle-orm/pg-core";
